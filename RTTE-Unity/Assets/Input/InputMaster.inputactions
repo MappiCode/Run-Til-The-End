@@ -1,0 +1,34 @@
+{
+    "name": "InputMaster",
+    "maps": [
+        {
+            "name": "InGame",
+            "id": "8e51f128-d878-46ad-a67e-daf4ec348e93",
+            "actions": [
+                {
+                    "name": "Jump",
+                    "type": "Button",
+                    "id": "d491f635-079a-450f-9bb3-cbed7804adac",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "91674af6-0a8e-4377-aca7-dd234a5178c0",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
