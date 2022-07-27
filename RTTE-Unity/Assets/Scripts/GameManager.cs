@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    private UIController uiController;
+    public UIController uiController;
+    public SceneController sceneController;
+    
     private Grid grid;
     
     private float score = 0;
@@ -12,12 +14,14 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         uiController = GetComponent<UIController>();
+        sceneController = GetComponent<SceneController>();
         grid = GameObject.FindObjectOfType<Grid>();
     }
 
     private void Update()
     {
-        score = Mathf.Round(grid.transform.position.x * -1);
+        if (grid != null)
+            score = Mathf.Round(grid.transform.position.x * -1);
         uiController.UpdateTextField("ScoreValue", score);
     }
 }

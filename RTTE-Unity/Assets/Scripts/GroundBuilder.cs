@@ -8,7 +8,6 @@ public class GroundBuilder : MonoBehaviour
     [SerializeField] private Tile groundTile;
 
     private Tilemap tm;
-    private float lastX = 0f;
     private int numAddedPieces = 0;
 
     private void Awake()
@@ -21,21 +20,24 @@ public class GroundBuilder : MonoBehaviour
         tm.CompressBounds();
     }
 
-    // Update is called once per frame
-    void Update()
+    void Build()
     {
-        if (transform.position.x < (lastX - 4f))
-        {
-            lastX = transform.position.x;
+        // Delete the ground behind the Player
+        tm.SetTile(new Vector3Int(-10 + numAddedPieces * 4, -2, 0), null);
             
-            // Delete the ground behind the Player
-            tm.SetTile(new Vector3Int(-10 + numAddedPieces * 4, -2, 0), null);
-            
-            // Add a new groundTile infront
-            tm.SetTile(new Vector3Int(18 + numAddedPieces * 4, -2, 0), groundTile);
+        // Add a new groundTile infront
+        tm.SetTile(new Vector3Int(18 + numAddedPieces * 4, -2, 0), groundTile);
 
-            tm.CompressBounds();
-            numAddedPieces++;
-        }
+        tm.CompressBounds();
+        numAddedPieces++;
+    }
+
+    void OnGridMoved (int tilesMoved)
+    {
+        if (tilesMoved == 0)
+            return;
+
+        if (tilesMoved % 4 == 0)
+            Build();
     }
 }
