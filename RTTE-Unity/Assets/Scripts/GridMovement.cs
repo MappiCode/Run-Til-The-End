@@ -4,13 +4,20 @@ using UnityEngine;
 
 public class GridMovement : MonoBehaviour
 {
+    private GameManager gm;
+    
     [SerializeField] private float lvlSpeed = 1f;
 
     private int tilesMoved = 0;
 
+    private void Start()
+    {
+        gm = FindObjectOfType<GameManager>();
+    }
+
     private void FixedUpdate()
     {
-        transform.Translate(Vector3.left * lvlSpeed * Time.deltaTime);
+        transform.Translate(Vector3.left * lvlSpeed * gm.difficulty * Time.deltaTime);
         if (transform.position.x < -1 * tilesMoved)
         {
             BroadcastMessage("OnGridMoved", tilesMoved);

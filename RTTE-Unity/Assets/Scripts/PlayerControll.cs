@@ -8,20 +8,12 @@ public class PlayerControll : MonoBehaviour
     [SerializeField] private Rigidbody2D rb;
     [SerializeField] private float jumpHeight = 5;
 
-    public float groundedYPos;
     private bool isGrounded;
 
-    private void Awake()
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        groundedYPos = transform.position.y + 0.1f;
-    }
-
-    private void Update()
-    {
-        if (transform.position.y <= groundedYPos)
+        if (collision.gameObject.CompareTag("Ground"))
             isGrounded = true;
-        else
-            isGrounded = false;
     }
 
 

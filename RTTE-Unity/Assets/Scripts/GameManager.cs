@@ -5,8 +5,10 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public UIController uiController;
-    public SceneController sceneController;
-    
+
+    public float difficulty = 1f;
+    [SerializeField] private float difficultyIncrease = 1f;
+
     private Grid grid;
     
     private float score = 0;
@@ -14,7 +16,6 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         uiController = GetComponent<UIController>();
-        sceneController = GetComponent<SceneController>();
         grid = GameObject.FindObjectOfType<Grid>();
     }
 
@@ -23,5 +24,10 @@ public class GameManager : MonoBehaviour
         if (grid != null)
             score = Mathf.Round(grid.transform.position.x * -1);
         uiController.UpdateTextField("ScoreValue", score);
+    }
+
+    private void FixedUpdate()
+    {
+        difficulty += difficultyIncrease * Time.deltaTime;
     }
 }

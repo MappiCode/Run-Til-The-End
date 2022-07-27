@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class SceneController : MonoBehaviour
+public static class SceneController
 {
-    public void LoadScene(string sceneName)
+    public static void LoadScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
     }
-    public void LoadScene(Scene scene)
+    public static void LoadScene(Scene scene)
     {
         if (scene != null)
             SceneManager.LoadScene(scene.name);
     }
 
-    public void ReloadScene()
+    public static void ReloadScene()
     {
         LoadScene(SceneManager.GetActiveScene());
     }
