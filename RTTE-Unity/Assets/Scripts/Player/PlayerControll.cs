@@ -16,7 +16,6 @@ public class PlayerControll : MonoBehaviour
             isGrounded = true;
     }
 
-
     private void OnJump()
     {
         if (isGrounded)
