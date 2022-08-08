@@ -17,6 +17,9 @@ public class GridMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (gm.gameIsPaused)
+            return;
+
         transform.Translate(Vector3.left * lvlSpeed * gm.difficulty * Time.deltaTime);
         if (transform.position.x < -1 * tilesMoved)
         {

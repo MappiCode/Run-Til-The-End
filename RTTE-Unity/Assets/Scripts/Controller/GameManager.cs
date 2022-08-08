@@ -5,6 +5,7 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public UIController uiController;
+    public AnimController animController;
 
     public float difficulty = 1f;
     [SerializeField] private float difficultyIncrease = 1f;
@@ -19,14 +20,7 @@ public class GameManager : MonoBehaviour
     public bool gameIsPaused
     {
         get { return _gameIsPaused; }
-        set
-        {
-            _gameIsPaused = value;
-            if (!_gameIsPaused)
-                Time.timeScale = 1;
-            else
-                Time.timeScale = 0;
-        }
+        set { _gameIsPaused = value; }
     }
 
     private void Start()
@@ -34,12 +28,10 @@ public class GameManager : MonoBehaviour
         gameIsPaused = true;
 
         uiController = GetComponent<UIController>();
+        animController = GetComponent<AnimController>();
         grid = GameObject.FindObjectOfType<Grid>();
     }
 
-    private void Update()
-    {
-    }
 
     private void FixedUpdate()
     {
@@ -56,6 +48,7 @@ public class GameManager : MonoBehaviour
     {
         gameIsPaused = false;
         uiController.SetActivePanel(UIController.Panels.InGame);
+        animController.ActivateAnimator("player");
     }
 
     // Used in Restart-Button on EndScreen
@@ -79,6 +72,8 @@ public class GameManager : MonoBehaviour
 
         uiController.UpdateTextField("EndScoreValue", score);
         uiController.UpdateTextField("HighScoreValue", highScore);
+
+        animController.DeactivadeAnimator("player");
     }
 
     private void OnAccept()

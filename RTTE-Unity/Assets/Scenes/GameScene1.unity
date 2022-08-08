@@ -853,9 +853,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 518924649}
+  - component: {fileID: 518924652}
   - component: {fileID: 518924650}
   - component: {fileID: 518924651}
-  - component: {fileID: 518924652}
+  - component: {fileID: 518924653}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: GameController
@@ -946,6 +947,21 @@ MonoBehaviour:
   m_DefaultActionMap: Menu
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &518924653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 518924648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1976250a775de141bb2af8ea5157770, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animators:
+  - name: player
+    animator: {fileID: 156475419}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
