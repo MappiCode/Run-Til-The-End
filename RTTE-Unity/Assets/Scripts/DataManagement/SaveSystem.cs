@@ -30,8 +30,8 @@ public static class SaveSystem
         }
         else
         {
-            Debug.LogError("Save file not found in" + path);
-            return null;
+            Debug.LogWarning("Save file not found in" + path);
+            return new ScoreData(0);
         }
     }
 }
