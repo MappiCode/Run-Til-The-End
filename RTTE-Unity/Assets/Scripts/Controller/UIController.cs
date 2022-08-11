@@ -10,14 +10,8 @@ public class UIController : MonoBehaviour
 {
     public enum Panels { PreGame, InGame, EndScreen};
 
-    [Serializable] private struct TextField
-    {
-        public string name;
-        public TextMeshProUGUI text;
-    }
-
-    [SerializeField] private TextField[] textFields;
-    [SerializeField] private GameObject[] uiPanels;
+    public GameObject[] texts;
+    public GameObject[] uiPanels;
 
     public GameObject activePanel { get; private set; }
 
@@ -26,13 +20,13 @@ public class UIController : MonoBehaviour
         SetActivePanel(Panels.PreGame);
     }
 
-    public void UpdateTextField(string textFieldName, float value)
+    public void UpdateTextField(string textName, float value)
     {
-        TextMeshProUGUI tm = textFields.Where(x => x.name == textFieldName).FirstOrDefault().text;
+        TextMeshProUGUI tm = texts.Where(x => x.name == textName).FirstOrDefault().GetComponent<TextMeshProUGUI>();
         if (tm != null)
             tm.text = value.ToString();
         else
-            Debug.LogWarning("There is no TextField named " + textFieldName + " in the UIController!");
+            Debug.LogWarning("There is no TextField named " + textName + " in the UIController!");
     }
 
     public void SetActivePanel(Panels panel)
@@ -48,7 +42,16 @@ public class UIController : MonoBehaviour
         }
     }
 
-    private void PlayerHit()
+    public void TextAnimation(string tName, AnimatableText.Animations anim)
+    {
+        AnimatableText aniText = texts.Where(text => text.name == tName).First().GetComponent<AnimatableText>();
+        if (aniText != null)
+            aniText.activeAnimation = anim;
+        else
+            Debug.LogWarning("There is no Animatable Text named " + tName + " in the UIController!");
+    }
+
+    public void ShowEndscreen()
     {
         SetActivePanel(Panels.EndScreen);
     }

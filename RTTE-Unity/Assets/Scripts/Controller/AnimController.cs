@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,18 +5,12 @@ using UnityEngine;
 
 public class AnimController : MonoBehaviour
 {
-    [Serializable]
-    private struct AssignedAnimator
-    {
-        public string name;
-        public Animator animator;
-    }
-    [SerializeField] private AssignedAnimator[] animators;
+    [SerializeField] private Animator[] animators;
 
     private void Start()
     {
         // Some Initalizations
-        DeactivadeAnimator("player");
+        DeactivadeAnimator("Player");
     }
 
     public void ActivateAnimator(string animatorName)
@@ -31,7 +24,7 @@ public class AnimController : MonoBehaviour
 
     private void AnimatorActivation(string animatorName, bool enabled)
     {
-        Animator anim = animators.Where(x => x.name == animatorName).FirstOrDefault().animator;
+        Animator anim = animators.Where(x => x.name == animatorName).FirstOrDefault();
         if (anim != null)
             anim.enabled = enabled;
         else
