@@ -27,6 +27,9 @@ public class AnimatableText : MonoBehaviour
 
     private void SetAnimation(Animations anim)
     {
+        if (animator == null)
+            animator = GetComponent<Animator>();
+
         animator.SetTrigger(anim.ToString());
     }
 }

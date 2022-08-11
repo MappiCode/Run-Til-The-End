@@ -33,13 +33,21 @@ public class GameManager : MonoBehaviour
         grid = GameObject.FindObjectOfType<Grid>();
     }
 
-
     private void FixedUpdate()
     {
+        if (gameIsPaused)
+            return;
+
         // Increase Score
         if (grid != null)
             score = Mathf.Round(grid.transform.position.x * -1);
         uiController.UpdateTextField("ScoreValue", score);
+
+        if (score % 100 == 0)
+        {
+            uiController.TextAnimation("ScoreValue", AnimatableText.Animations.pulsate);
+            uiController.TextAnimation("ScoreValue", AnimatableText.Animations.idle);
+        }
 
         difficulty += difficultyIncrease * Time.deltaTime;
     }
@@ -49,7 +57,7 @@ public class GameManager : MonoBehaviour
     {
         gameIsPaused = false;
         uiController.SetActivePanel(UIController.Panels.InGame);
-        animController.ActivateAnimator("player");
+        animController.ActivateAnimator("Player");
     }
 
     // Used in Restart-Button on EndScreen
@@ -62,6 +70,8 @@ public class GameManager : MonoBehaviour
     {
         gameIsPaused = true;
 
+        uiController.ShowEndscreen();
+
         // Load HighScore
         highScore = SaveSystem.LoadScore().score;
         
@@ -69,15 +79,15 @@ public class GameManager : MonoBehaviour
         {
             SaveSystem.SaveScore(score);
             highScore = score;
+            uiController.TextAnimation("HighScoreText", AnimatableText.Animations.pulsate);
+            uiController.TextAnimation("HighScoreValue", AnimatableText.Animations.pulsate);
 
         }
-            //uiController.textFields.Where(textfield => textfield.name == "HighScoreValue").FirstOrDefault().textMesh.GetComponent<AnimatableText>().activeAnimation = AnimatableText.Animations.pulsate;
-            //uiController.textFields.Where(textfield => textfield.name == "HighScoreText").FirstOrDefault().textMesh.GetComponent<AnimatableText>().activeAnimation = AnimatableText.Animations.pulsate;
 
         uiController.UpdateTextField("EndScoreValue", score);
         uiController.UpdateTextField("HighScoreValue", highScore);
 
-        animController.DeactivadeAnimator("player");
+        animController.DeactivadeAnimator("Player");
     }
 
     private void OnAccept()
