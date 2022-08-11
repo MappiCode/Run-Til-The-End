@@ -10,14 +10,14 @@ public class UIController : MonoBehaviour
 {
     public enum Panels { PreGame, InGame, EndScreen};
 
-    [Serializable] private struct TextField
+    [Serializable] public struct TextField
     {
         public string name;
-        public TextMeshProUGUI text;
+        public TextMeshProUGUI textMesh;
     }
 
-    [SerializeField] private TextField[] textFields;
-    [SerializeField] private GameObject[] uiPanels;
+    public TextField[] textFields;
+    public GameObject[] uiPanels;
 
     public GameObject activePanel { get; private set; }
 
@@ -28,7 +28,7 @@ public class UIController : MonoBehaviour
 
     public void UpdateTextField(string textFieldName, float value)
     {
-        TextMeshProUGUI tm = textFields.Where(x => x.name == textFieldName).FirstOrDefault().text;
+        TextMeshProUGUI tm = textFields.Where(x => x.name == textFieldName).FirstOrDefault().textMesh;
         if (tm != null)
             tm.text = value.ToString();
         else

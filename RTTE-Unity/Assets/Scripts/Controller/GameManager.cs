@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,7 +28,7 @@ public class GameManager : MonoBehaviour
     {
         gameIsPaused = true;
 
-        uiController = GetComponent<UIController>();
+        uiController = FindObjectOfType<UIController>();
         animController = GetComponent<AnimController>();
         grid = GameObject.FindObjectOfType<Grid>();
     }
@@ -68,7 +69,10 @@ public class GameManager : MonoBehaviour
         {
             SaveSystem.SaveScore(score);
             highScore = score;
+
         }
+            //uiController.textFields.Where(textfield => textfield.name == "HighScoreValue").FirstOrDefault().textMesh.GetComponent<AnimatableText>().activeAnimation = AnimatableText.Animations.pulsate;
+            //uiController.textFields.Where(textfield => textfield.name == "HighScoreText").FirstOrDefault().textMesh.GetComponent<AnimatableText>().activeAnimation = AnimatableText.Animations.pulsate;
 
         uiController.UpdateTextField("EndScoreValue", score);
         uiController.UpdateTextField("HighScoreValue", highScore);
