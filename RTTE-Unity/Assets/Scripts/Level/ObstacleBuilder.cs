@@ -5,13 +5,32 @@ using UnityEngine.Tilemaps;
 
 public class ObstacleBuilder : MonoBehaviour
 {
-    public float spawnPropability;
+    [SerializeField] private float spawnPropability;
+    [SerializeField] private float multiSpawnPropapility;
+    [SerializeField] private float groundToAirRatio;
 
-    [SerializeField] private Tile[] obstacleTiles;
+    [SerializeField] private TileBase[] groundObstacleTiles;
+    [SerializeField] private TileBase[] airObstacleTiles;
     private Tilemap tm;
 
+ 
     private int tilesInARow = 0;
     private int tileGap = 0;
+    private bool allowMultiTiles;
+    private Vector3Int currentPosition;
+    private int YGround = -2;
+    private int YAir = -1;
+    private int _YPos;
+
+    private int YPos
+    {
+        get { return _YPos; }
+        set 
+        { 
+            _YPos = value;
+            currentPosition.y = value;
+        }
+    }
 
     private void Start()
     {
@@ -21,31 +40,70 @@ public class ObstacleBuilder : MonoBehaviour
     void OnGridMoved(int tilesMoved)
     {
         // Delete the obstacles behind the Player
-        tm.SetTile(new Vector3Int(-10 + tilesMoved, -2, 0), null);
-        
+        currentPosition = new Vector3Int(-10 + tilesMoved, YGround, 0);
+        tm.SetTile(currentPosition, null);
+        currentPosition.y++;
+        tm.SetTile(currentPosition, null);
 
-        if (spawnPropability > Random.value || tileGap > 10)
+
+        currentPosition = new Vector3Int(10 + tilesMoved, YPos, 0);
+
+        if (spawnPropability > Random.value)
         {
-            if(tilesInARow > 2 || tileGap < 3)
+            if (CheckCanPlaceTile())
+            {
+                PlaceObstale(ChooseObstacle());
+            }
+            else
             {
                 tilesInARow = 0;
                 tileGap++;
-                return;
             }
+        }
+    }
 
-            Tile obstacle = obstacleTiles[Random.Range(0, obstacleTiles.Length)];
+    private bool CheckCanPlaceTile()
+    {
+        if (tileGap < 5)
+        {
+            if (allowMultiTiles && tileGap == 0 && tilesInARow < 2 && multiSpawnPropapility > Random.value)
+            {
+                return true;
+            }
+            return false;
+        }
+        return true;
+    }
 
-            // Place a new obstacle infront
-            tm.SetTile(new Vector3Int(10 + tilesMoved, -2, 0), obstacle);
+    private TileBase ChooseObstacle()
+    {
+        TileBase obstacle;
 
-            tileGap = 0;
-            tilesInARow++;
+        if(1 < Random.Range(0, groundToAirRatio - 1) || tilesInARow > 0)
+        {
+            // ground obstacle
+            obstacle = groundObstacleTiles[Random.Range(0, groundObstacleTiles.Length)];
+            YPos = YGround;
+            allowMultiTiles = true;
         }
         else
         {
-            tilesInARow = 0;
-            tileGap++;
+            // flying obstacle
+            obstacle = airObstacleTiles[Random.Range(0, airObstacleTiles.Length)];
+            YPos = YAir;
+            allowMultiTiles = false;
         }
+
+        return obstacle;
+    }
+
+    private void PlaceObstale(TileBase obstacle)
+    {
+        // Place a new obstacle infront
+        tm.SetTile(currentPosition, obstacle);
+
+        tileGap = 0;
+        tilesInARow++;
 
         tm.CompressBounds();
     }
