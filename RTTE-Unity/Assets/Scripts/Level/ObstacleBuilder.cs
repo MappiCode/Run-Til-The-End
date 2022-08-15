@@ -12,50 +12,21 @@ public class ObstacleBuilder : MonoBehaviour
 
     [SerializeField] private Sprite[] groundObstacleSprites;
     [SerializeField] private Sprite[] airObstacleSprites;
-    [SerializeField] private TileBase[] groundObstacleTiles;
-    [SerializeField] private TileBase[] airObstacleTiles;
-    private Tilemap tm;
 
+    [SerializeField] private Transform GroundSpawnPoint;
+    [SerializeField] private Transform AirSpawnPoint;
  
     private int obstaclesInARow = 0;
     private int obstacleGap = 0;
     private bool allowMultiObstacles;
-    private Vector3 currentPosition;
-    private float YGround = -1.5f;
-    private float YAir = -0.5f;
-    private float _YPos;
-
-    private float YPos
-    {
-        get { return _YPos; }
-        set 
-        { 
-            _YPos = value;
-            currentPosition.y = value;
-        }
-    }
-
-    private void Start()
-    {
-        tm = GetComponent<Tilemap>();
-    }
 
     void OnGridMoved(int tilesMoved)
     {
-        // Delete the obstacles behind the Player
-        //currentPosition = new Vector3(-10 + tilesMoved, YGround, 0);
-        //tm.SetTile(currentPosition, null);
-        //currentPosition.y++;
-        //tm.SetTile(currentPosition, null);
-
-
-        currentPosition = new Vector3(10, YPos, 0);
-
         if (spawnPropability > Random.value)
         {
             if (CheckCanPlaceObstacle())
             {
-                PlaceObstale(ChooseObstacle());
+                ChooseAndPlaceObstacle();
             }
             else
             {
@@ -78,7 +49,7 @@ public class ObstacleBuilder : MonoBehaviour
         return true;
     }
 
-    private GameObject ChooseObstacle()
+    private void ChooseAndPlaceObstacle()
     {
         GameObject obstacle = Instantiate(obstaclePrefab);
         obstacle.transform.parent = this.transform;
@@ -88,34 +59,24 @@ public class ObstacleBuilder : MonoBehaviour
         {
             // ground obstacle
             sprite = groundObstacleSprites[Random.Range(0, groundObstacleSprites.Length)];
-            YPos = YGround;
+            obstacle.transform.position = GroundSpawnPoint.position;
             allowMultiObstacles = true;
         }
         else
         {
             // flying obstacle
             sprite = airObstacleSprites[Random.Range(0, airObstacleSprites.Length)];
-            YPos = YAir;
+            obstacle.transform.position = AirSpawnPoint.position;
             allowMultiObstacles = false;
         }
         obstacle.GetComponent<SpriteRenderer>().sprite = sprite;
 
         // reset collider to match sprite-shape
         obstacle.AddComponent<PolygonCollider2D>();
-
         obstacle.AddComponent<AddShadowCaster>().GenerateShadowCaster();
-        
-        return obstacle;
-    }
 
-    private void PlaceObstale(GameObject obstacle)
-    {
-        // Place a new obstacle infront
-        obstacle.transform.position = currentPosition;
 
         obstacleGap = 0;
         obstaclesInARow++;
-
-        tm.CompressBounds();
     }
 }
