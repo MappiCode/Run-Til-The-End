@@ -5,24 +5,27 @@ using UnityEngine.Tilemaps;
 
 public class ObstacleBuilder : MonoBehaviour
 {
+    [SerializeField] private GameObject obstaclePrefab;
     [SerializeField] private float spawnPropability;
     [SerializeField] private float multiSpawnPropapility;
     [SerializeField] private float groundToAirRatio;
 
+    [SerializeField] private Sprite[] groundObstacleSprites;
+    [SerializeField] private Sprite[] airObstacleSprites;
     [SerializeField] private TileBase[] groundObstacleTiles;
     [SerializeField] private TileBase[] airObstacleTiles;
     private Tilemap tm;
 
  
-    private int tilesInARow = 0;
-    private int tileGap = 0;
-    private bool allowMultiTiles;
-    private Vector3Int currentPosition;
-    private int YGround = -2;
-    private int YAir = -1;
-    private int _YPos;
+    private int obstaclesInARow = 0;
+    private int obstacleGap = 0;
+    private bool allowMultiObstacles;
+    private Vector3 currentPosition;
+    private float YGround = -1.5f;
+    private float YAir = -0.5f;
+    private float _YPos;
 
-    private int YPos
+    private float YPos
     {
         get { return _YPos; }
         set 
@@ -40,33 +43,33 @@ public class ObstacleBuilder : MonoBehaviour
     void OnGridMoved(int tilesMoved)
     {
         // Delete the obstacles behind the Player
-        currentPosition = new Vector3Int(-10 + tilesMoved, YGround, 0);
-        tm.SetTile(currentPosition, null);
-        currentPosition.y++;
-        tm.SetTile(currentPosition, null);
+        //currentPosition = new Vector3(-10 + tilesMoved, YGround, 0);
+        //tm.SetTile(currentPosition, null);
+        //currentPosition.y++;
+        //tm.SetTile(currentPosition, null);
 
 
-        currentPosition = new Vector3Int(10 + tilesMoved, YPos, 0);
+        currentPosition = new Vector3(10, YPos, 0);
 
         if (spawnPropability > Random.value)
         {
-            if (CheckCanPlaceTile())
+            if (CheckCanPlaceObstacle())
             {
                 PlaceObstale(ChooseObstacle());
             }
             else
             {
-                tilesInARow = 0;
-                tileGap++;
+                obstaclesInARow = 0;
+                obstacleGap++;
             }
         }
     }
 
-    private bool CheckCanPlaceTile()
+    private bool CheckCanPlaceObstacle()
     {
-        if (tileGap < 5)
+        if (obstacleGap < 5)
         {
-            if (allowMultiTiles && tileGap == 0 && tilesInARow < 2 && multiSpawnPropapility > Random.value)
+            if (allowMultiObstacles && obstacleGap == 0 && obstaclesInARow < 2 && multiSpawnPropapility > Random.value)
             {
                 return true;
             }
@@ -75,35 +78,43 @@ public class ObstacleBuilder : MonoBehaviour
         return true;
     }
 
-    private TileBase ChooseObstacle()
+    private GameObject ChooseObstacle()
     {
-        TileBase obstacle;
+        GameObject obstacle = Instantiate(obstaclePrefab);
+        obstacle.transform.parent = this.transform;
 
-        if(1 < Random.Range(0, groundToAirRatio - 1) || tilesInARow > 0)
+        Sprite sprite;
+        if(1 < Random.Range(0, groundToAirRatio - 1) || obstaclesInARow > 0)
         {
             // ground obstacle
-            obstacle = groundObstacleTiles[Random.Range(0, groundObstacleTiles.Length)];
+            sprite = groundObstacleSprites[Random.Range(0, groundObstacleSprites.Length)];
             YPos = YGround;
-            allowMultiTiles = true;
+            allowMultiObstacles = true;
         }
         else
         {
             // flying obstacle
-            obstacle = airObstacleTiles[Random.Range(0, airObstacleTiles.Length)];
+            sprite = airObstacleSprites[Random.Range(0, airObstacleSprites.Length)];
             YPos = YAir;
-            allowMultiTiles = false;
+            allowMultiObstacles = false;
         }
+        obstacle.GetComponent<SpriteRenderer>().sprite = sprite;
 
+        // reset collider to match sprite-shape
+        obstacle.AddComponent<PolygonCollider2D>();
+
+        obstacle.AddComponent<AddShadowCaster>().GenerateShadowCaster();
+        
         return obstacle;
     }
 
-    private void PlaceObstale(TileBase obstacle)
+    private void PlaceObstale(GameObject obstacle)
     {
         // Place a new obstacle infront
-        tm.SetTile(currentPosition, obstacle);
+        obstacle.transform.position = currentPosition;
 
-        tileGap = 0;
-        tilesInARow++;
+        obstacleGap = 0;
+        obstaclesInARow++;
 
         tm.CompressBounds();
     }
