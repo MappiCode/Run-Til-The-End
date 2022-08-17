@@ -10,8 +10,8 @@ public class ObstacleBuilder : MonoBehaviour
     [SerializeField] private float multiSpawnPropapility;
     [SerializeField] private float groundToAirRatio;
 
-    [SerializeField] private Sprite[] groundObstacleSprites;
-    [SerializeField] private Sprite[] airObstacleSprites;
+    [SerializeField] private AnimationSprites[] groundObstacleSprites;
+    [SerializeField] private AnimationSprites[] airObstacleSprites;
 
     [SerializeField] private Transform GroundSpawnPoint;
     [SerializeField] private Transform AirSpawnPoint;
@@ -51,29 +51,29 @@ public class ObstacleBuilder : MonoBehaviour
 
     private void ChooseAndPlaceObstacle()
     {
-        GameObject obstacle = Instantiate(obstaclePrefab);
-        obstacle.transform.parent = this.transform;
+        GameObject obstacleObj = Instantiate(obstaclePrefab);
+        obstacleObj.transform.parent = this.transform;
 
-        Sprite sprite;
+        AnimationSprites sprites;
         if(1 < Random.Range(0, groundToAirRatio - 1) || obstaclesInARow > 0)
         {
             // ground obstacle
-            sprite = groundObstacleSprites[Random.Range(0, groundObstacleSprites.Length)];
-            obstacle.transform.position = GroundSpawnPoint.position;
+            sprites = groundObstacleSprites[Random.Range(0, groundObstacleSprites.Length)];
+            obstacleObj.transform.position = GroundSpawnPoint.position;
             allowMultiObstacles = true;
         }
         else
         {
             // flying obstacle
-            sprite = airObstacleSprites[Random.Range(0, airObstacleSprites.Length)];
-            obstacle.transform.position = AirSpawnPoint.position;
+            sprites = airObstacleSprites[Random.Range(0, airObstacleSprites.Length)];
+            obstacleObj.transform.position = AirSpawnPoint.position;
             allowMultiObstacles = false;
         }
-        obstacle.GetComponent<SpriteRenderer>().sprite = sprite;
+        obstacleObj.GetComponent<Obstacle>().spriteAnim = sprites;
 
         // reset collider to match sprite-shape
-        obstacle.AddComponent<PolygonCollider2D>();
-        obstacle.AddComponent<AddShadowCaster>().GenerateShadowCaster();
+        obstacleObj.AddComponent<PolygonCollider2D>();
+        obstacleObj.AddComponent<AddShadowCaster>().GenerateShadowCaster();
 
 
         obstacleGap = 0;
